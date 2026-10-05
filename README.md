@@ -1,108 +1,260 @@
-# CampusFlow - Smart College Service & Queue Management System
+# CampusFlow
 
-Students take digital tokens, staff call them, admin manages everything.
-The database has **no fake data**. You create the first admin yourself on the /setup page.
+A Java-based college service and queue management system designed to manage students, staff, campus services, service tokens, and live queues.
 
-## What runs where
+## Tech Stack
 
-| Part | Technology | Port | Started by |
-|---|---|---|---|
-| Web app (login, dashboards, pages, REST, TCP server) | Java Servlets + JSP on **Tomcat** | 8080 | start-all script |
-| TCP queue server | Java (inside the web app) | 9090 | starts with the web app |
-| Live Queue Board + REST gateway | **Node.js** | 3000 | start-all script |
-| Data | **MySQL** (Workbench to view) | 3306 | you |
-
-Important: Servlets and JSP are part of your Java syllabus, so they need Tomcat. There is no way around it.
-But you do NOT need to do anything by hand: `start-all` builds the project, puts it in Tomcat, starts Tomcat and starts Node.
-
-## One-time setup (about 20 minutes)
-
-1. **Install** (if missing): JDK 25 (you have it), Node.js 18 or newer, MySQL Server + Workbench.
-2. **Tomcat 10.1**: download the "Core: zip" from tomcat.apache.org (version 10.1.x), unzip it, e.g. `C:\tomcat`.
-3. **Environment variables** (Windows: Start menu > "Edit the system environment variables"):
-   - `JAVA_HOME` = your JDK 25 folder
-   - `CATALINA_HOME` = `C:\tomcat` (your Tomcat folder)
-   Close and reopen the terminal after setting them.
-4. **Database**: in Workbench open `database/schema.sql` and run it. Check: `USE campusflow; SHOW TABLES;` shows 6 tables, all empty.
-5. **Libraries**: double-click `get-libs.bat` (needs internet). It puts 7 jar files in `lib/`
-   (MySQL Connector/J, JSTL, JavaMail). If curl fails, download them manually from search.maven.org, names are inside the script.
-6. **Config**: copy `config/db.properties.template` to `config/db.properties`, then type your MySQL `db.user` and `db.password`.
-
-## Run
-
-Open a terminal in the CampusFlow folder:
-
-    start-all.bat        (Linux/Mac: ./start-all.sh)
-
-Wait about 10 seconds, then open:
-- App: http://localhost:8080/CampusFlow/
-- Queue Board: http://localhost:3000/
-
-Stop: close the Node window (Ctrl+C) and run `%CATALINA_HOME%\bin\shutdown.bat`.
-After you change any Java or JSP file, run `build.bat` again (Tomcat reloads the new war by itself).
-
-## First use (in this order)
-
-1. Open the app. It sends you to **/setup**. Create the administrator (your real name, email, password).
-2. Log in as **Staff / Admin**. Go to **Services** and add real services, e.g. name "Exam Section", prefix "EX".
-   Tokens will look like `EX-101`, `EX-102`...
-3. Go to **Staff** and add a staff member for each service (choose role Staff and the service).
-4. Students open **Register**, then log in, click **Get token**.
-5. Staff logs in, opens **My Queue**, clicks **Call next**, then **Complete** or **Skip**.
-6. Students see position and status update live. Notifications appear in the bell page.
-7. Open the Queue Board on port 3000 (for the college hall screen).
-
-## Test checklist
-
-- `http://localhost:3000/api/health` shows `"node":"up","java":"up"`
-- `http://localhost:8080/CampusFlow/api/services` shows your services as JSON
-- Student tries `/CampusFlow/admin/dashboard` -> "403" page (authorization works)
-- Two students take tokens at once -> numbers are different (transaction + lock works)
-- TCP demo with many clients:
-  `java -cp build\WEB-INF\classes com.campusflow.network.QueueClient localhost 9090 1 10`
-  (the last number is the service id from the services table)
-
-## REST endpoints
-
-| URL | Meaning |
+| Technology | Purpose |
 |---|---|
-| GET /api/services | active services + waiting count (Java: port 8080/CampusFlow, Node: port 3000) |
-| GET /api/queue/{serviceId} | waiting count + now serving |
-| GET /api/token/{EX-101} | token status + position |
-| GET /api/student/me | logged-in student's active tokens (Java only, needs login) |
-| GET /api/board | (Node only) all queues in one call |
-| GET /api/tcp/queue/{serviceId} | (Node only) asks the Java TCP server |
-| GET /api/health | (Node only) is Node and Java alive |
+| Java | Main application development |
+| Java Servlets | Backend request handling |
+| JSP | Dynamic web pages |
+| Apache Tomcat | Java web application server |
+| JDBC | Java-to-MySQL database connectivity |
+| MySQL | Application database |
+| Node.js | Live queue board and gateway |
+| HTML5 | Frontend structure |
+| CSS3 | Frontend styling |
+| JavaScript | Frontend interaction |
+| REST API | Communication between application components |
+| JSON | Data exchange |
+| TCP/IP Sockets | Queue communication |
+| Git | Version control |
+| GitHub | Code hosting |
+| Visual Studio Code | Development environment |
 
-## JavaMail (optional)
+## Features
 
-Emails are OFF by default. To turn on: in `config/db.properties` set `mail.enabled=true` and fill host, port, user, password
-(Gmail needs an "App Password"). Students get an email for token created / called / completed / skipped.
+- Student Registration and Login
+- Staff Management
+- Admin Dashboard
+- College Service Management
+- Token Generation
+- Live Queue Management
+- Student and Staff Queue Handling
+- Queue Status Updates
+- Service Availability Management
+- Activity Tracking
+- Authentication and Role Management
+- MySQL Database Integration
+- Node.js Live Queue Board
+- TCP Client-Server Communication
+- Notifications
 
-## Troubleshooting
+## System Architecture
 
-- **"db.properties not found"**: you did not create `config/db.properties`, then run `build.bat` again.
-- **"Cannot reach the database"**: MySQL not running, or wrong user/password in `db.properties`.
-- **Page shows 404 at /CampusFlow/**: Tomcat is still starting (wait), or the war did not deploy (check `%CATALINA_HOME%\logs\catalina.*.log`).
-- **COMPILE FAILED**: read the first error line; the most common cause is an empty `lib/` folder or wrong CATALINA_HOME.
-- **Pages look plain (no colours)**: Bootstrap loads from the internet (CDN). Connect to the internet.
-- **Port 8080 or 3000 busy**: for Node use `set PORT=3001` before starting. For Tomcat edit `conf/server.xml`.
-- **Node says "Java backend not reachable"**: Tomcat is not running yet. If your Tomcat port is not 8080, set `JAVA_API=http://localhost:PORT/CampusFlow`.
+```text
+                    CampusFlow
+                        |
+                        v
+                  Web Browser
+                        |
+                 HTML / CSS / JS
+                        |
+                        v
+                Java Servlets + JSP
+                        |
+                    Tomcat
+                        |
+              +---------+---------+
+              |                   |
+              v                   v
+            JDBC            TCP Queue Server
+              |                   |
+              v                   v
+            MySQL           Node.js Gateway
+                                  |
+                                  v
+                           Live Queue Board
+```
+How the System Works
+User Login
+    ↓
+Dashboard
+    ↓
+Select College Service
+    ↓
+Generate Token
+    ↓
+Join Queue
+    ↓
+Queue Management
+    ↓
+Staff Serves Token
+    ↓
+Queue Status Updated
+    ↓
+Live Queue Board
 
-## Project map
 
-    database/schema.sql              tables only, no data
-    config/db.properties.template    your DB + TCP + mail settings
-    src/main/java/com/campusflow/
-      model/       beans (Student, Staff, Service, Token, ...)
-      dao/         SQL only (PreparedStatement, ResultSet)
-      service/     business rules + transactions
-      controller/  servlets (Setup, Login, Register, Student, Staff, Admin, Api)
-      filter/      AuthFilter (login + role check), EncodingFilter
-      network/     QueueServer (TCP + ExecutorService), QueueClient (demo)
-      listener/    starts the TCP server with the web app
-      util/        DBConnection (JDBC), PasswordUtil, Json, MailUtil
-    src/main/webapp/WEB-INF/views/   JSP pages (only reachable through servlets)
-    src/main/webapp/css, js          styles and live-update script
-    node-api/                        Node.js gateway + live board (no npm install needed)
-    docs/VIVA.md                     where to find every viva topic in the code
+Database
+
+CampusFlow uses MySQL as its database.
+
+Database Information	Value
+Database	campusflow
+Database System	MySQL
+Host	localhost
+Port	3306
+Java Application	localhost:8080
+Node.js Gateway	localhost:3000
+TCP Queue Server	localhost:9090
+
+The database configuration is stored locally in:
+
+config/db.properties
+
+The actual db.properties file is excluded from GitHub using .gitignore.
+
+A template is provided as:
+
+config/db.properties.template
+Main Components
+Component	Role
+Java Servlets	Handle backend requests and business logic
+JSP	Generate dynamic web pages
+Tomcat	Runs the Java web application
+JDBC	Connects Java with MySQL
+MySQL	Stores application data
+Node.js	Provides gateway and live queue functionality
+TCP Server	Handles queue communication
+JavaScript	Handles frontend interactions
+JSON	Transfers data between components
+Project Structure
+CampusFlow/
+├── config/
+├── database/
+├── docs/
+├── node-api/
+├── src/
+├── .gitignore
+├── build.bat
+├── build.sh
+├── get-libs.bat
+├── get-libs.sh
+├── start-all.bat
+├── start-all.sh
+└── README.md
+Important Files
+File / Folder	Purpose
+src/	Java source code and web application files
+node-api/	Node.js gateway and live queue application
+database/	MySQL database scripts
+config/	Local database configuration
+docs/	Project and viva documentation
+build.bat	Windows build script
+start-all.bat	Windows startup script
+README.md	Project documentation
+.gitignore	Prevents sensitive and generated files from being uploaded
+Requirements
+Java JDK
+Apache Tomcat
+MySQL Server
+Node.js
+Visual Studio Code
+Setup
+1. Create the MySQL Database
+
+Create the database:
+
+CREATE DATABASE campusflow;
+
+Import the database/schema files provided in the database folder.
+
+2. Configure Database Connection
+
+Copy or use the provided template:
+
+config/db.properties.template
+
+Create your local:
+
+config/db.properties
+
+and enter your MySQL connection details.
+
+Do not upload db.properties to GitHub because it may contain your database credentials.
+
+3. Build the Java Application
+
+On Windows, run:
+
+build.bat
+
+This builds the CampusFlow Java web application for Tomcat.
+
+4. Start Tomcat
+
+Deploy the generated CampusFlow application to Apache Tomcat and start the Tomcat server.
+
+The Java application runs at:
+
+http://localhost:8080/CampusFlow
+5. Start the Node.js Gateway
+
+Open a terminal inside:
+
+node-api
+
+Install dependencies:
+
+npm install
+
+Start the Node.js service:
+
+npm start
+
+The Node.js service runs on:
+
+http://localhost:3000
+Ports Used
+Service	Port
+MySQL	3306
+Apache Tomcat / Java	8080
+Node.js	3000
+TCP Queue Server	9090
+Security
+Passwords are hashed before storage.
+Database credentials are stored in a local configuration file.
+config/db.properties is excluded using .gitignore.
+Compiled Java files and generated build files are excluded from the repository.
+Learning Outcomes
+
+This project demonstrates practical implementation of:
+
+Java Web Development
+Servlets and JSP
+JDBC and MySQL
+CRUD Operations
+Authentication and Sessions
+Role-Based Access
+MVC Architecture
+TCP Socket Programming
+Multithreading
+REST APIs
+JSON Communication
+Node.js
+Queue Management
+Database Integration
+Git and GitHub
+GitHub
+
+https://github.com/singh-builds/CampusFlow
+
+Author
+
+Aditya Rajesh Singh
+
+GitHub: https://github.com/singh-builds
+
+
+After pasting:
+
+**Ctrl + S → Commit changes**
+
+Use commit message:
+
+```text
+Improve CampusFlow README
+
+Then click Commit changes.
