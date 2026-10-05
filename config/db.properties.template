@@ -1,0 +1,19 @@
+# Copy this file to config/db.properties and fill in YOUR real values.
+# Never share db.properties or upload it to GitHub.
+
+# ---- MySQL (required) ----
+db.url=jdbc:mysql://localhost:3306/campusflow?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+db.user=
+db.password=
+
+# ---- TCP queue server (started automatically with the web app) ----
+tcp.port=9090
+
+# ---- JavaMail (optional). Keep false until you have SMTP details. ----
+# Gmail example: mail.host=smtp.gmail.com, mail.port=587, use an App Password.
+mail.enabled=false
+mail.host=
+mail.port=587
+mail.user=
+mail.password=
+mail.from=

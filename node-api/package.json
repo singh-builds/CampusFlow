@@ -1,0 +1,8 @@
+{
+  "name": "campusflow-node-api",
+  "version": "1.0.0",
+  "description": "REST gateway + live display board for CampusFlow (no npm packages needed)",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=18" }
+}

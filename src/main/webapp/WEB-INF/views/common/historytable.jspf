@@ -1,0 +1,8 @@
+<div class="card"><div class="table-responsive"><table class="table mb-0">
+  <thead><tr><th>Time</th><th>Token</th><th>Service</th><th>Student</th><th>Action</th><th>Staff</th><th>Remarks</th></tr></thead><tbody>
+  <c:forEach var="r" items="${rows}"><tr>
+    <td class="text-nowrap"><fmt:formatDate value="${r.actionTime}" pattern="dd MMM, hh:mm a"/></td>
+    <td class="fw-bold"><c:out value="${r.tokenNumber}"/></td><td><c:out value="${r.serviceName}"/></td><td><c:out value="${r.studentName}"/></td>
+    <td><span class="badge badge-status st-${r.action}">${r.action}</span></td><td><c:out value="${r.staffName}"/></td><td><c:out value="${r.remarks}"/></td></tr></c:forEach>
+  <c:if test="${empty rows}"><tr><td colspan="7" class="text-center text-muted py-4">No activity yet.</td></tr></c:if>
+  </tbody></table></div></div>

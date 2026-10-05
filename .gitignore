@@ -1,0 +1,6 @@
+build/
+CampusFlow.war
+config/db.properties
+lib/*.jar
+node_modules/
+*.class

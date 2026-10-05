@@ -1,0 +1,30 @@
+:root { --side: #1e293b; --side-hover: #334155; --accent: #2563eb; --bg: #f1f5f9; }
+body { background: var(--bg); font-family: "Segoe UI", system-ui, sans-serif; }
+.app { display: flex; min-height: 100vh; }
+.sidebar { width: 250px; background: var(--side); color: #cbd5e1; display: flex; flex-direction: column; position: fixed; inset: 0 auto 0 0; z-index: 1030; transition: transform .2s; }
+.sidebar .brand { padding: 1.2rem 1.4rem; color: #fff; font-weight: 700; font-size: 1.25rem; border-bottom: 1px solid #334155; }
+.sidebar .brand i { color: #60a5fa; }
+.sidebar nav { padding: .8rem; flex: 1; }
+.sidebar .nav-link { color: #cbd5e1; border-radius: .5rem; padding: .6rem .9rem; margin-bottom: .2rem; }
+.sidebar .nav-link i { margin-right: .6rem; }
+.sidebar .nav-link:hover { background: var(--side-hover); color: #fff; }
+.sidebar .nav-link.active { background: var(--accent); color: #fff; }
+.sidebar .user { padding: 1rem 1.2rem; border-top: 1px solid #334155; font-size: .9rem; }
+.content { margin-left: 250px; flex: 1; min-width: 0; }
+.topbar { background: #fff; border-bottom: 1px solid #e2e8f0; padding: .8rem 1.5rem; display: flex; align-items: center; gap: 1rem; }
+.topbar h1 { font-size: 1.15rem; margin: 0; font-weight: 600; }
+.card { border: 0; border-radius: .75rem; box-shadow: 0 1px 3px rgba(15,23,42,.08); }
+.stat .value { font-size: 1.8rem; font-weight: 700; }
+.stat .icon { font-size: 1.8rem; color: var(--accent); }
+.table > :not(caption) > * > * { padding: .75rem 1rem; }
+.table thead th { background: #f8fafc; font-size: .8rem; text-transform: uppercase; letter-spacing: .03em; color: #64748b; }
+.badge-status { font-weight: 600; padding: .4em .7em; }
+.st-WAITING { background: #fef3c7; color: #92400e; } .st-CALLED { background: #dbeafe; color: #1e40af; }
+.st-COMPLETED { background: #dcfce7; color: #166534; } .st-SKIPPED { background: #fee2e2; color: #991b1b; }
+.st-CANCELLED { background: #e2e8f0; color: #475569; } .st-CREATED { background: #ede9fe; color: #5b21b6; }
+.st-ACTIVE { background: #dcfce7; color: #166534; } .st-INACTIVE { background: #e2e8f0; color: #475569; }
+.serving { text-align: center; padding: 1.5rem; } .serving .num { font-size: 3rem; font-weight: 800; color: var(--accent); letter-spacing: .05em; }
+.auth-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1rem; background: linear-gradient(135deg, #1e293b, #334155); }
+.auth-card { width: 100%; max-width: 440px; background: #fff; border-radius: 1rem; padding: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
+.auth-card .logo { font-weight: 800; font-size: 1.6rem; color: var(--side); } .auth-card .logo i { color: var(--accent); }
+@media (max-width: 991px) { .sidebar { transform: translateX(-100%); } .sidebar.open { transform: none; } .content { margin-left: 0; } }

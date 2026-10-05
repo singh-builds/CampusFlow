@@ -1,0 +1,61 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><c:out value="${pageTitle}"/> - CampusFlow</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="${ctx}/css/style.css" rel="stylesheet">
+</head>
+<body data-ctx="${ctx}" <c:if test="${not empty autorefresh}">data-autorefresh="1"</c:if>>
+<c:choose>
+<c:when test="${not empty sessionScope.role}">
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand"><i class="bi bi-people-fill"></i> CampusFlow</div>
+    <nav class="nav flex-column">
+      <c:if test="${sessionScope.role == 'STUDENT'}">
+        <a class="nav-link ${nav=='dashboard'?'active':''}" href="${ctx}/student/dashboard"><i class="bi bi-grid"></i>Dashboard</a>
+        <a class="nav-link ${nav=='notifications'?'active':''}" href="${ctx}/student/notifications"><i class="bi bi-bell"></i>Notifications</a>
+        <a class="nav-link ${nav=='history'?'active':''}" href="${ctx}/student/history"><i class="bi bi-clock-history"></i>My History</a>
+      </c:if>
+      <c:if test="${sessionScope.role == 'STAFF'}">
+        <a class="nav-link ${nav=='queue'?'active':''}" href="${ctx}/staff/queue"><i class="bi bi-list-ol"></i>My Queue</a>
+        <a class="nav-link ${nav=='history'?'active':''}" href="${ctx}/staff/history"><i class="bi bi-clock-history"></i>Queue History</a>
+      </c:if>
+      <c:if test="${sessionScope.role == 'ADMIN'}">
+        <a class="nav-link ${nav=='dashboard'?'active':''}" href="${ctx}/admin/dashboard"><i class="bi bi-speedometer2"></i>Dashboard</a>
+        <a class="nav-link ${nav=='services'?'active':''}" href="${ctx}/admin/services"><i class="bi bi-building"></i>Services</a>
+        <a class="nav-link ${nav=='staff'?'active':''}" href="${ctx}/admin/staff"><i class="bi bi-person-badge"></i>Staff</a>
+        <a class="nav-link ${nav=='students'?'active':''}" href="${ctx}/admin/students"><i class="bi bi-mortarboard"></i>Students</a>
+        <a class="nav-link ${nav=='activity'?'active':''}" href="${ctx}/admin/activity"><i class="bi bi-activity"></i>Activity</a>
+      </c:if>
+    </nav>
+    <div class="user">
+      <div class="fw-semibold text-white"><c:out value="${sessionScope.name}"/></div>
+      <div class="small mb-2"><c:out value="${sessionScope.role}"/><c:if test="${not empty sessionScope.serviceName}"> - <c:out value="${sessionScope.serviceName}"/></c:if></div>
+      <form method="post" action="${ctx}/logout"><button class="btn btn-outline-light btn-sm w-100"><i class="bi bi-box-arrow-right"></i> Logout</button></form>
+    </div>
+  </aside>
+  <div class="content">
+    <div class="topbar">
+      <button class="btn btn-light d-lg-none" id="menuBtn" type="button"><i class="bi bi-list"></i></button>
+      <h1><c:out value="${pageTitle}"/></h1>
+    </div>
+    <main class="p-3 p-md-4">
+</c:when>
+<c:otherwise>
+<div class="auth-wrap"><div class="auth-card">
+  <div class="logo text-center mb-3"><i class="bi bi-people-fill"></i> CampusFlow</div>
+</c:otherwise>
+</c:choose>
+<c:if test="${not empty sessionScope.flashMsg}">
+  <div class="alert alert-${sessionScope.flashType} alert-dismissible fade show" role="alert">
+    <c:out value="${sessionScope.flashMsg}"/><button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+  <c:remove var="flashMsg" scope="session"/><c:remove var="flashType" scope="session"/>
+</c:if>
+<c:if test="${not empty error}"><div class="alert alert-danger"><c:out value="${error}"/></div></c:if>
